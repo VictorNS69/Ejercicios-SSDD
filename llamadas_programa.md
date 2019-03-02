@@ -15,5 +15,5 @@ http://laurel.datsi.fi.upm.es/~fperez/reto1.jpg
 
 Se podría probar:
 ```
-mpwget ~fperez/reto1.txt ~fperez/reto2.txt ~fperez/reto1.jpg :www.datsi.fi.upm.es :laurel.datsi.fi.upm.es
+mpwget ~fperez/reto1.txt ~fperez/reto2.txt ~fperez/reto1.jpg :http://www.datsi.fi.upm.es :http://laurel.datsi.fi.upm.es
 ```
