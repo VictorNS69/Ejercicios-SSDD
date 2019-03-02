@@ -75,20 +75,27 @@ def prepare_package(sizes, args):
 
 
 def make_request(args, packages):
+    """
+    Creates the request of the object
+    :param args: dictionary with objects and servers
+    :param packages: dictionary of the packages to send
+    :return: The string of the retrieved object
+    """
     items_list = {}
     for pack in packages:
-        last_size = 0
+        last_size = -1
         i = 0
         aux_item = []
         for size in packages[pack]:
-            next_size = last_size + size
-            headers = {"Range": "bytes=%d-%d" % (last_size, next_size)}
+            next_size = last_size + size +1
+            headers = {"Range": "bytes=%d-%d" % (last_size+1, next_size)}
+            print("headers", headers)
             url = "%s/%s" % (args["servers"][i], pack)
             req = requests.get(url, headers=headers).content
             i += 1
             aux_item.append(req)
             last_size = next_size
-        item = "".join(map(str, aux_item))
+        item = "".join(map(str, aux_item)).replace("b", "").replace("'", "")
         items_list[pack] = item
     return items_list
 
@@ -101,4 +108,8 @@ if __name__ == "__main__":
     items = make_request(args, packages)
     for item in items:
         print(item, items[item])
+
+    print("mine\t", items["~fperez/reto2.txt"])
+    print("max\t", "acdefghijacdefghijacdefghijacdefghijABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJAABCDEFGHIJABCDEFGHIJacdefghijacdefghija")
+    print("web\t", "ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghija" )
 
