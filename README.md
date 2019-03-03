@@ -1,4 +1,4 @@
-# Obtención de recursos web en servidores replicados
+# Acceso paralelo a múltiples recursos web almacenados en servidores replicados
 Se plantea desarrollar un cliente que recupere múltiples recursos web de varios servidores replicados (N), 
 tal que por cada recurso web lea un fragmento del mismo (de tamaño 1/N) de cada uno de los servidores y que, 
 además, use pipeline de peticiones para optimizar las peticiones que se envían a cada servidor.
