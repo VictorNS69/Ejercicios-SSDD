@@ -127,7 +127,7 @@ def make_request(args, packages):
             aux_item.append(req)
             last_size = next_size
         print("Total size:", last_size + 1, "Bytes")
-        print("---------------------------------------------------------")
+        print("-" * 80)
         item = bytes()
         for i in range(0, len(aux_item)):
             item += aux_item[i]
