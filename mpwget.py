@@ -1,21 +1,46 @@
+__author__ = "Víctor Nieves Sánchez"
+__copyright__ = "Copyright 2019, Víctor Nieves"
+__credits__ = ["Víctor Nieves Sánchez", "Máximo García Martínez"]
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Víctor Nieves Sánchez"
+__email__ = "vnievess@gmail.com"
+__status__ = "Finished"
+
 import sys
 import requests
 import os
 
-# TODO: Debug program with possible bad servers and objects
+USAGE = "usage: mpwget [object] ... [server] ...\nUse at least 1 object and 1 server\n" \
+        "\tobject\t: object to get\n\tserver\t: server to search"
+
+
 def parser():
     """
-    Parses the arguments
+    Parses the arguments and exist if it exist if it is not called correctly
     @:return returns the dictionary with objects and servers
     """
-    # TODO: empty parameters --> usage message
-    # TODO: it must have at least 1 object and 1 server
+    # Call with no arguments
+    if len(sys.argv) < 3:
+        print(USAGE)
+        exit(0)
+
     arg = {"objects": [], "servers": []}
+
     for a in sys.argv[1:]:
         if a[0] == ':':
             arg["servers"].append(a[1:])
         else:
             arg["objects"].append(a)
+
+    # Call with less than 1 object or 1 server
+    if len(arg["objects"]) == 0:
+        print("At least one object required\n", USAGE)
+        exit(0)
+    if len(arg["servers"]) == 0:
+        print("At least one server required\n", USAGE)
+        exit(0)
+
     return arg
 
 
@@ -32,6 +57,7 @@ def ping_alive(arg):
                 arg["servers"].remove(server)
         except Exception:
             arg["servers"].remove(server)
+            print("The server", server, "cannot be reached", file=sys.stderr)
     return arg
 
 
@@ -45,6 +71,10 @@ def get_sizes(args):
     for server in args["servers"]:
         for obj in args["objects"]:
             req = requests.head("%s/%s" % (server, obj))
+            if not req.status_code == 200:
+                print("The object", obj, "cannot be reached in", server, file=sys.stderr)
+                args["objects"].remove(obj)
+                continue
             sizes[obj] = req.headers["content-length"]
     return sizes
 
@@ -86,15 +116,18 @@ def make_request(args, packages):
         last_size = -1
         i = 0
         aux_item = []
+        print("Package:", pack)
         for size in packages[pack]:
             next_size = last_size + size
             headers = {"Range": "bytes=%d-%d" % (last_size+1, next_size)}
             url = "%s/%s" % (args["servers"][i], pack)
+            print("\t\tFetching:", str(headers).replace("{", "").replace("}", "").replace("'", ""))
             req = requests.get(url, headers=headers).content
             i += 1
             aux_item.append(req)
             last_size = next_size
-
+        print("Total size:", last_size + 1, "Bytes")
+        print("---------------------------------------------------------")
         item = bytes()
         for i in range(0, len(aux_item)):
             item += aux_item[i]
@@ -114,18 +147,22 @@ def generate_files(items):
 
         name = str(item).split("/")
         path = "objects/" + name[-1]
-        print(path)
         with open(path, "wb") as f:
             f.write(items[item])
-        # TODO: success message
 
 
 if __name__ == "__main__":
     args = parser()
     ping_alive(args)
+    if len(args["servers"]) == 0:
+        print("Any of the servers is available", file=sys.stderr)
+        exit(0)
     sizes = get_sizes(args)
+    if len(sizes) == 0:
+        print("Any object found in any server", file=sys.stderr)
+        exit(0)
     packages = prepare_package(sizes, args)
     items = make_request(args, packages)
     generate_files(items)
-
-
+    print("Elements downloaded in /objects")
+    exit(0)
