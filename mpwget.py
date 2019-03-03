@@ -1,7 +1,8 @@
 import sys
 import requests
+import os
 
-
+# TODO: Debug program with possible bad servers and objects
 def parser():
     """
     Parses the arguments
@@ -31,7 +32,6 @@ def ping_alive(arg):
                 arg["servers"].remove(server)
         except Exception:
             arg["servers"].remove(server)
-    # print("arg in ping", arg)
     return arg
 
 
@@ -87,17 +87,37 @@ def make_request(args, packages):
         i = 0
         aux_item = []
         for size in packages[pack]:
-            next_size = last_size + size +1
+            next_size = last_size + size
             headers = {"Range": "bytes=%d-%d" % (last_size+1, next_size)}
-            print("headers", headers)
             url = "%s/%s" % (args["servers"][i], pack)
             req = requests.get(url, headers=headers).content
             i += 1
             aux_item.append(req)
             last_size = next_size
-        item = "".join(map(str, aux_item)).replace("b", "").replace("'", "")
+
+        item = bytes()
+        for i in range(0, len(aux_item)):
+            item += aux_item[i]
         items_list[pack] = item
     return items_list
+
+
+def generate_files(items):
+    """
+    Generates the downloaded objects as files
+    :param items: dictionary with objects and its bytes
+    :return:the files in the actual directory
+    """
+    for item in items:
+        if not os.path.isdir("objects/"):
+            os.makedirs("objects")
+
+        name = str(item).split("/")
+        path = "objects/" + name[-1]
+        print(path)
+        with open(path, "wb") as f:
+            f.write(items[item])
+        # TODO: success message
 
 
 if __name__ == "__main__":
@@ -106,10 +126,6 @@ if __name__ == "__main__":
     sizes = get_sizes(args)
     packages = prepare_package(sizes, args)
     items = make_request(args, packages)
-    for item in items:
-        print(item, items[item])
+    generate_files(items)
 
-    print("mine\t", items["~fperez/reto2.txt"])
-    print("max\t", "acdefghijacdefghijacdefghijacdefghijABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJAABCDEFGHIJABCDEFGHIJacdefghijacdefghija")
-    print("web\t", "ABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJABCDEFGHIJabcdefghijabcdefghijabcdefghijabcdefghijabcdefghijabcdefghija" )
 
