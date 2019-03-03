@@ -7,7 +7,7 @@ además, use pipeline de peticiones para optimizar las peticiones que se envían
 [Víctor Nieves Sánchez](https://twitter.com/VictorNS69)
 
 ## Enunciado
-Podrás encontrar el enunciado en [statement.md](/statement.md)
+Podrás encontrar el enunciado en [statement.md](/statement.md).
 
 ## Ejemplos de llamadas al programa
 Hay publicados tres objetos en dos servidores:
