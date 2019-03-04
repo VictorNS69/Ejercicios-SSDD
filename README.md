@@ -7,7 +7,7 @@ además, use pipeline de peticiones para optimizar las peticiones que se envían
 [Víctor Nieves Sánchez](https://twitter.com/VictorNS69)
 
 ## Enunciado
-Podrás encontrar el enunciado en [statement.md](/statement.md).
+Podrás encontrar el enunciado [aquí](/statement.md).
 
 ## Ejemplos de llamadas al programa
 Hay publicados tres objetos en dos servidores:
@@ -29,4 +29,4 @@ Se podría probar:
 python3 mpwget.py ~fperez/reto1.txt ~fperez/reto2.txt ~fperez/reto1.jpg :http://www.datsi.fi.upm.es :http://laurel.datsi.fi.upm.es
 ```
 ## Nota
-Puede que estos objetos no estén disponibles en el futuro.
+Puede que los servidores y los objetos no estén disponibles en el futuro.
