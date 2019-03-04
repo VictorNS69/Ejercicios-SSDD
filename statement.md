@@ -16,7 +16,7 @@ Para intentar aclarar el comportamiento esperado, suponga que hay 4 objetos (des
 
 El programa a desarrollar recibirá como argumentos los nombres de los objetos a solicitar y la lista de los servidores replicados (sus nombres DNS, con un carácter : delante para diferenciarlos):
 ```bash
-	mpwget objeto1 objeto2 objeto3 :servidor1 :servidor2...
+mpwget objeto1 objeto2 objeto3 :servidor1 :servidor2...
 ```
 En cuanto al nombre de los objetos/recursos, corresponderá a la parte final de la URL. Por ejemplo, en `http://www.datsi.fi.upm.es/informacion.html` sería _informacion.html_, mientras que para `http://www.datsi.fi.upm.es/~coes/index.html` sería _~coes/index.html_.
 
