@@ -6,6 +6,9 @@ además, use pipeline de peticiones para optimizar las peticiones que se envían
 ## Autor
 [Víctor Nieves Sánchez](https://twitter.com/VictorNS69)
 
+## Herramientas
+Python versión 3.7
+
 ## Enunciado
 Podrás encontrar el enunciado [aquí](/statement.md).
 
