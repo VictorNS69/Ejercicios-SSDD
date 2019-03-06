@@ -10,7 +10,7 @@ además, use pipeline de peticiones para optimizar las peticiones que se envían
 Python versión 3.7
 
 ## Enunciado
-Podrás encontrar el enunciado [aquí](/statement.md).
+Podrás encontrar el enunciado [aquí](/acceso-paralelo/statement.md).
 
 ## Ejemplos de llamadas al programa
 Hay publicados tres objetos en dos servidores:
