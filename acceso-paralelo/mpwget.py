@@ -10,6 +10,8 @@ __status__ = "Finished"
 import sys
 import requests
 import os
+from subprocess import call, DEVNULL
+import shlex
 
 USAGE = "usage: mpwget [object] ... [server] ...\nUse at least 1 object and 1 server\n" \
         "\tobject\t: object to get\n\tserver\t: server to search"
@@ -111,27 +113,36 @@ def make_request(args, packages):
     :param packages: dictionary of the packages to send
     :return: The string of the retrieved object
     """
+    # curl -v -r 0-60,61-120 http://laurel.datsi.fi.upm.es/~fperez/reto1.txt
+    # curl -r 0-60 http://laurel.datsi.fi.upm.es/~fperez/reto1.txt  -r 60-120 http://datsi.fi.upm.es/~fperez/reto1.txt
+    # curl -r 0-59 http://laurel.datsi.fi.upm.es/~fperez/reto1.txt  >> ejemplo | curl -r 60-119 http://datsi.fi.upm.es/~fperez/reto1.txt >> ejemplo
     items_list = {}
     for pack in packages:
         last_size = -1
         i = 0
         aux_item = []
+        server_and_package = []
         print("Package:", pack)
         for size in packages[pack]:
-            next_size = last_size + size
-            headers = {"Range": "bytes=%d-%d" % (last_size+1, next_size)}
-            url = "%s/%s" % (args["servers"][i], pack)
-            print("\t\tFetching:", str(headers).replace("{", "").replace("}", "").replace("'", ""))
-            req = requests.get(url, headers=headers).content
+            next_size = last_size + size # last_size +1, next_size
+            pretty_range = {"Range": "bytes = %d-%d" % (last_size+1, next_size)}
+            server_and_package.append('-r ' + str(last_size + 1) + '-' + str(next_size) + ' ' +
+                                      str([args["servers"][i]]) + "/" + str(pack))
+
+            print("\t\tFetching:", str(pretty_range).replace("{", "").replace("}", "").replace("'", ""))
             i += 1
-            aux_item.append(req)
             last_size = next_size
+        curl_parameters = str(server_and_package).replace("[", "").replace("]", "").replace("'", "").replace(",", "")
+        aux_item = call(shlex.split('curl ' + curl_parameters.replace("\"", ""))) # TODO: redirect from stdout to aux_item
+
+        print(" aux" , aux_item)
         print("Total size:", last_size + 1, "Bytes")
         print("-" * 80)
         item = bytes()
-        for i in range(0, len(aux_item)):
+        """for i in range(0, len(aux_item)):
             item += aux_item[i]
         items_list[pack] = item
+        """
     return items_list
 
 
